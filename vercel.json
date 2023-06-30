@@ -11,5 +11,11 @@
             "src": "/(.*)",
             "dest": "./index.js"
         }
-    ]
+    ],
+    "env": {
+        "PORT": "3000",
+        "MONGODB_URI": "mongodb+srv://Baobs2911:Baobs29112004@api-food-delivery.eowdjzw.mongodb.net/",
+        "ACCESSTOKEN_KEY": "Baodt2911",
+        "REFRESHTOKEN_KEY": "Baodt2911"
+    }
 }
