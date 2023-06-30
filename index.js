@@ -16,13 +16,13 @@ app.use(cors({
 app.use(morgan('combined'))
 app.use(express.json())
 app.use(cookieParser())
-app.use('/', (req, res) => {
-    res.send('Welcome to Baodt2911')
-})
 app.use('/api/v1/auth', routerUser)
 app.use('/api/v1/restaurants', routerRestaurants)
 app.use('/api/v1/dishes', routerDishes)
 app.use('/api/v1/evaluate', routerEvaluate)
+app.use('/', (req, res) => {
+    res.send('Welcome to Baodt2911')
+})
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
         app.listen(PORT, async () => {
