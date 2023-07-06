@@ -4,7 +4,7 @@ import restaurantsDB from "../models/restaurants.js";
 const dishesController = {
     getAlldishes: async (req, res) => {
         try {
-            const dishes = await dishesDB.find()
+            const dishes = await dishesDB.find().populate('restaurant')
             res.status(200).json({ data: dishes })
         } catch (error) {
             res.status(500).json(error)
@@ -13,7 +13,7 @@ const dishesController = {
     getDishesById: async (req, res) => {
         try {
             const { id } = req.params
-            const dishes = await dishesDB.findById(id)
+            const dishes = await dishesDB.findById(id).populate('restaurant')
             res.status(200).json({ dishes })
         } catch (error) {
             res.status(500).json(error)
@@ -24,12 +24,34 @@ const dishesController = {
             const { limit } = req.query
             const convertLimitToInt = parseInt(limit)
             //use aggregate and sample  get random dishes for popular
-            let dishes = await dishesDB.aggregate([{ $sample: { size: 6 } }])
+            let dishes = await dishesDB.aggregate([
+                { $sample: { size: 6 } },
+                {
+                    //Use lookup to get data from collection references
+                    $lookup: {
+                        from: 'restaurants',//collection or table
+                        localField: 'restaurant',// fieldName current
+                        foreignField: '_id', //fieldName collection or table 
+                        as: 'restaurant' //fieldName new 
+                    }
+                }
+            ])
             if (convertLimitToInt) {
                 if (convertLimitToInt < 6 || convertLimitToInt > 30) {
                     return res.status(404).json('The limit is between 6 and 30')
                 }
-                dishes = await dishesDB.aggregate([{ $sample: { size: convertLimitToInt } }])
+                dishes = await dishesDB.aggregate([
+                    { $sample: { size: convertLimitToInt } },
+                    {
+                        //Use lookup to get data from collection references
+                        $lookup: {
+                            from: 'restaurants',//collection or table
+                            localField: 'restaurant',// fieldName current
+                            foreignField: '_id', //fieldName collection or table 
+                            as: 'restaurant' //fieldName new 
+                        }
+                    }
+                ])
             }
             res.status(200).json({ data: dishes })
         } catch (error) {
@@ -39,7 +61,7 @@ const dishesController = {
     searchDishes: async (req, res) => {
         try {
             const { q: querySearch } = req.query
-            const resultsDishes = await dishesDB.find({ name: { $regex: querySearch, $options: 'i' } })
+            const resultsDishes = await dishesDB.find({ name: { $regex: querySearch, $options: 'i' } }).populate('restaurant')
             res.status(200).json({ data: resultsDishes })
         } catch (error) {
             res.status(500).json(error)
