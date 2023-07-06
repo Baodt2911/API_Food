@@ -6,6 +6,10 @@ const restaurantsDB = mongoose.model('restaurants',
             required: true, //NOT NULL
             unique: true
         },
+        logo: {
+            type: String,
+            required: true
+        },
         imageURL: {
             type: String,
             required: true

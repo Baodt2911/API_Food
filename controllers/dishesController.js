@@ -19,6 +19,23 @@ const dishesController = {
             res.status(500).json(error)
         }
     },
+    getDishesPopular: async (req, res) => {
+        try {
+            const { limit } = req.query
+            const convertLimitToInt = parseInt(limit)
+            //use aggregate and sample  get random dishes for popular
+            let dishes = await dishesDB.aggregate([{ $sample: { size: 6 } }])
+            if (convertLimitToInt) {
+                if (convertLimitToInt < 6 || convertLimitToInt > 30) {
+                    return res.status(404).json('The limit is between 6 and 30')
+                }
+                dishes = await dishesDB.aggregate([{ $sample: { size: convertLimitToInt } }])
+            }
+            res.status(200).json({ data: dishes })
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    },
     searchDishes: async (req, res) => {
         try {
             const { q: querySearch } = req.query
