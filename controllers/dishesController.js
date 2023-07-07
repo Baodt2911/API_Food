@@ -67,6 +67,15 @@ const dishesController = {
             res.status(500).json(error)
         }
     },
+    suggestSearch: async (req, res) => {
+        try {
+            const { q: querySearch } = req.query
+            const resultsDishes = await dishesDB.find({ name: { $regex: querySearch, $options: 'i' } }, 'name')
+            res.status(200).json(resultsDishes)
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    },
     addDishes: async (req, res) => {
         try {
             const restaurant = await restaurantsDB.findById(req.body.restaurant)
