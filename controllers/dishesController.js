@@ -60,24 +60,21 @@ const dishesController = {
     },
     searchDishes: async (req, res) => {
         try {
-            const { q: querySearch } = req.query
+            const { q: querySearch, order } = req.query
             if (!querySearch) {
                 return res.status(404).json("No result is found")
             }
-            const resultsDishes = await dishesDB.find({ name: { $regex: querySearch, $options: 'i' } }).populate('restaurant')
+            let resultsDishes = await dishesDB.find({ name: { $regex: querySearch, $options: 'i' } }).populate('restaurant')
+            if (order === 'suggest') {
+                const firstWord = querySearch.split(" ")[0]
+                resultsDishes = await dishesDB.find({
+                    name: {
+                        $regex: new RegExp(`^${firstWord}`),//query firstWord
+                        $options: 'i'
+                    }
+                }, 'name')//Get fieldName 
+            }
             res.status(200).json({ data: resultsDishes })
-        } catch (error) {
-            res.status(500).json(error)
-        }
-    },
-    suggestSearch: async (req, res) => {
-        try {
-            const { q: querySearch } = req.query
-            if (!querySearch) {
-                return res.status(404).json("No result is found")
-            }
-            const resultsDishes = await dishesDB.find({ name: { $regex: querySearch, $options: 'i' } }, 'name')
-            res.status(200).json(resultsDishes)
         } catch (error) {
             res.status(500).json(error)
         }
