@@ -8,8 +8,7 @@ const userDB = mongoose.model('user',
             maxlength: 30
         },
         photoURL: {
-            type: String,
-            required: true
+            type: String
         },
         email: {
             type: String,
@@ -22,12 +21,10 @@ const userDB = mongoose.model('user',
         },
         phoneNumber: {
             type: String,
-            required: true,
             unique: true
         },
         address: {
             type: String,
-            required: true
         },
         role: {
             type: String,

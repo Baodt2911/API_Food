@@ -46,8 +46,20 @@ const restaurantsController = {
     },
     searchRestaurant: async (req, res) => {
         try {
-            const { q: querySearch } = req.query
-            const resultsRestaurant = await restaurantsDB.find({ name: { $regex: querySearch, $options: 'i' } })
+            const { q: querySearch, order } = req.query
+            if (!querySearch) {
+                return res.status(404).json("No result is found")
+            }
+            let resultsRestaurant = await restaurantsDB.find({ name: { $regex: querySearch, $options: 'i' } })
+            if (order === 'suggest') {
+                const firstWord = querySearch.split(" ")[0]
+                resultsRestaurant = await restaurantsDB.find({
+                    name: {
+                        $regex: new RegExp(`^${firstWord}`),//query firstWord
+                        $options: 'i'
+                    }
+                }, 'name')//Get fieldName 
+            }
             res.status(200).json({ data: resultsRestaurant })
         } catch (error) {
             res.status(500).json(error)
