@@ -3,12 +3,11 @@ const userDB = mongoose.model('user',
     new Schema({
         displayName: {
             type: String,
-            required: true,
-            minlength: 3,
+            minlength: 6,
             maxlength: 30
         },
         photoURL: {
-            type: String
+            type: String,
         },
         email: {
             type: String,
@@ -21,7 +20,7 @@ const userDB = mongoose.model('user',
         },
         phoneNumber: {
             type: String,
-            unique: true
+            unique: true,
         },
         address: {
             type: String,
