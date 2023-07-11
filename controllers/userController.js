@@ -114,8 +114,17 @@ const userController = {
             res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken })
         })
     },
+    updateProfile: async (req, res) => {
+        try {
+            const existingUser = await userDB.findById(req.params.id)
+            await existingUser.updateOne({ $set: req.body })
+            res.status(200).json("Update successfully")
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    },
     userLogout: async (req, res) => {
-        const refreshToken = req.body?.refreshToken
+        const { authorization: refreshToken } = req.headers
         await refreshTokenDB.findOneAndDelete({ refreshToken })
         res.status(200).json('Logged out!!')
     }

@@ -25,6 +25,10 @@ const userDB = mongoose.model('user',
         address: {
             type: String,
         },
+        isNewUser: {
+            type: Boolean,
+            default: true
+        },
         role: {
             type: String,
             default: 'user'
