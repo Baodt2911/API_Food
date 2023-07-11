@@ -118,7 +118,12 @@ const userController = {
         try {
             const existingUser = await userDB.findById(req.params.id)
             await existingUser.updateOne({ $set: req.body })
-            res.status(200).json("Update successfully")
+            const existingUserUpdated = await userDB.findById(req.params.id)
+            const { password, ...orther } = existingUserUpdated._doc
+            res.status(200).json({
+                message: "Update successfully",
+                data: orther
+            })
         } catch (error) {
             res.status(500).json(error)
         }
