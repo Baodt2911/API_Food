@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 const evaluateDB = mongoose.model('evaluate',
     new Schema({
-        id: {
+        userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'user'
         },
@@ -14,8 +14,8 @@ const evaluateDB = mongoose.model('evaluate',
             required: true
         },
         dishes: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'dishes'
+            type: String,
+            required: true
         }
     },
         {

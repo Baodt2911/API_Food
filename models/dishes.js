@@ -26,12 +26,10 @@ const dishesDB = mongoose.model('dishes',
             type: Number,
             required: true,
         },
-        evaluate: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'evaluate'
-            }
-        ]
+        order: {
+            type: Number,
+            default: 0
+        }
     },
         {
             timestamps: true

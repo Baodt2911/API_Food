@@ -4,7 +4,10 @@ import restaurantsDB from "../models/restaurants.js";
 const dishesController = {
     getAlldishes: async (req, res) => {
         try {
-            const dishes = await dishesDB.find().populate('restaurant')
+            const dishes = await dishesDB.find().populate({
+                path: 'restaurant',
+                select: 'name'
+            })
             res.status(200).json({ data: dishes })
         } catch (error) {
             res.status(500).json(error)
@@ -13,7 +16,7 @@ const dishesController = {
     getDishesById: async (req, res) => {
         try {
             const { id } = req.params
-            const dishes = await dishesDB.findById(id).populate('restaurant')
+            const dishes = await dishesDB.findById(id)
             res.status(200).json({ dishes })
         } catch (error) {
             res.status(500).json(error)
@@ -64,7 +67,10 @@ const dishesController = {
             if (!querySearch) {
                 return res.status(404).json("No result is found")
             }
-            let resultsDishes = await dishesDB.find({ name: { $regex: querySearch, $options: 'i' } }).populate('restaurant')
+            let resultsDishes = await dishesDB.find({ name: { $regex: querySearch, $options: 'i' } }).populate({
+                path: 'restaurant',
+                select: 'name'
+            })
             if (order === 'suggest') {
                 const firstWord = querySearch.split(" ")[0]
                 resultsDishes = await dishesDB.find({
@@ -107,7 +113,7 @@ const dishesController = {
                 { menu: req.params.id },
                 { $pull: { menu: req.params.id } }
             )
-            await evaluateDB.updateOne({ dishes: req.params.id }, { dishes: null })
+            await evaluateDB.deleteMany({ dishes: req.params.id })
             await dishesDB.findByIdAndDelete(req.params.id)
             res.status(200).json("Deleted successfully")
         } catch (error) {
