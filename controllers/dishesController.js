@@ -17,7 +17,7 @@ const dishesController = {
         try {
             const { id } = req.params
             const dishes = await dishesDB.findById(id)
-            res.status(200).json({ dishes })
+            res.status(200).json(dishes)
         } catch (error) {
             res.status(500).json(error)
         }

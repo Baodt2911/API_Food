@@ -22,7 +22,7 @@ const restaurantsController = {
             if (type === 'menu') {
                 restaurants = await restaurantsDB.findById(id).populate('menu')
             }
-            res.status(200).json({ restaurants })
+            res.status(200).json(restaurants)
         } catch (error) {
             res.status(500).json(error)
         }
