@@ -17,11 +17,8 @@ const restaurantsController = {
     getRestaurantById: async (req, res) => {
         try {
             const { id } = req.params
-            const { type } = req.query
-            let restaurants = await restaurantsDB.findById(id)
-            if (type === 'menu') {
-                restaurants = await restaurantsDB.findById(id).populate('menu')
-            }
+            const restaurants = await restaurantsDB.findById(id).populate('menu')
+
             res.status(200).json(restaurants)
         } catch (error) {
             res.status(500).json(error)
