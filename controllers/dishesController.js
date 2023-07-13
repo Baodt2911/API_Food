@@ -22,6 +22,18 @@ const dishesController = {
             res.status(500).json(error)
         }
     },
+    getDishesByRestaurant: async (req, res) => {
+        try {
+            const { id } = req.params
+            const dishes = await dishesDB.find({ restaurant: id }).populate({
+                path: 'restaurant',
+                select: 'name'
+            })
+            res.status(200).json({ data: dishes })
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    },
     getDishesPopular: async (req, res) => {
         try {
             const { limit } = req.query
