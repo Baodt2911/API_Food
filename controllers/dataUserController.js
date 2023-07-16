@@ -42,7 +42,7 @@ const dataUserController = {
     },
     addCart: async (req, res) => {
         try {
-            const { userId } = req.params
+            const { id: userId } = req.params
             const { cart } = req.body
             const existingDataUser = await dataUserDB.findOne({ userId })
             const isNewProduct = await dataUserDB.findOneAndUpdate(
@@ -74,7 +74,7 @@ const dataUserController = {
     },
     removeProduct: async (req, res) => {
         try {
-            const { userId } = req.params
+            const { id: userId } = req.params
             const { cart } = req.body
             const isDeletProduct = await dataUserDB.findOneAndUpdate(
                 // find product in cart
@@ -91,7 +91,6 @@ const dataUserController = {
             if (!isDeletProduct) {
                 return res.status(404).json('Not found product')
             }
-            console.log(isDeletProduct);
             res.status(200).json("Removed from cart")
         } catch (error) {
             res.status(500).json(error)
@@ -99,7 +98,8 @@ const dataUserController = {
     },
     addOrderHistory: async (req, res) => {
         try {
-            const { userId, orderHistory } = req.body
+            const { id: userId } = req.params
+            const { orderHistory } = req.body
             const existingDataUser = await dataUserDB.findOne({ userId })
             await existingDataUser.updateOne({
                 $push: {

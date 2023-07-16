@@ -5,5 +5,5 @@ const router = express.Router()
 router.get('/userId/:id', checkUser, dataUserController.getDataUser)
 router.post('/add-cart/:id', checkUser, dataUserController.addCart)
 router.delete('/remove-product/:id', checkUser, dataUserController.removeProduct)
-router.post('/add-history', checkUser, dataUserController.addOrderHistory)
+router.post('/add-history/:id', checkUser, dataUserController.addOrderHistory)
 export default router
