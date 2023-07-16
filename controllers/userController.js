@@ -2,6 +2,7 @@ import userDB from "../models/user.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import refreshTokenDB from "../models/refreshToken.js"
+import dataUserDB from "../models/data-user.js"
 const userController = {
     getAllUser: async (req, res) => {
         const existingUsers = await userDB.find()
@@ -19,7 +20,7 @@ const userController = {
         }
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
-        await userDB.create({
+        const { _id: userId } = await userDB.create({
             displayName,
             photoURL,
             email,
@@ -27,6 +28,7 @@ const userController = {
             phoneNumber,
             address
         })
+        await dataUserDB.create({ userId }) // Store data user
         return res.status(200).json({ message: "Register successfully" })
     },
     generateAccessToken: (user) => {

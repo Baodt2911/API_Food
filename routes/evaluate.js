@@ -1,7 +1,6 @@
 import express from 'express'
 import { evaluateController } from '../controllers/index.js'
-import { checkAdmin } from '../middleware/auth.js'
-import { checkUser } from '../middleware/evaluate.js'
+import { checkAdmin, checkUser } from '../middleware/auth.js'
 const router = express.Router()
 router.get('/', evaluateController.getAllEvaluate)
 router.get('/:id', evaluateController.getAllEvaluateByDishes)

@@ -13,11 +13,20 @@ const checkToken = (req, res, next) => {
         next()
     })
 }
+const checkUser = (req, res, next) => {
+    checkToken(req, res, () => {
+        if (req.body.userId === req.user.id ||
+            req.user.id === req.params.id) {
+            next()
+        } else {
+            res.status(403).json('You are not authorized')
+        }
+    })
+}
 const checkAdmin = (req, res, next) => {
     checkToken(req, res, () => {
         if (req.user.role === 'admin' ||
-            req.user.role === 'manage' ||
-            req.user.id === req.params.id
+            req.user.role === 'manage'
         ) {
             next()
         } else {
@@ -25,4 +34,4 @@ const checkAdmin = (req, res, next) => {
         }
     })
 }
-export { checkToken, checkAdmin }
+export { checkToken, checkAdmin, checkUser }

@@ -3,7 +3,8 @@ const evaluateDB = mongoose.model('evaluate',
     new Schema({
         userId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'user'
+            ref: 'user',
+            required: true
         },
         text: {
             type: String,
