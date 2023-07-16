@@ -11,7 +11,7 @@ const evaluateDB = mongoose.model('evaluate',
             required: true
         },
         rate: {
-            type: String,
+            type: Number,
             required: true
         },
         dishes: {

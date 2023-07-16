@@ -20,7 +20,6 @@ const userDB = mongoose.model('user',
         },
         phoneNumber: {
             type: String,
-            unique: true,
         },
         address: {
             type: String,

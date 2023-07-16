@@ -10,12 +10,10 @@ const userController = {
     },
     register: async (req, res) => {
         const { displayName, photoURL, email, password, phoneNumber, address } = req.body
-        const existingUser = await userDB.findOne({ $or: [{ email }, { phoneNumber }] })
+        const existingUser = await userDB.findOne({ email })
         if (existingUser) {
             if (existingUser.email === email) {
                 return res.status(409).json({ message: 'Email already exists' });
-            } else if (existingUser.phoneNumber === phoneNumber) {
-                return res.status(409).json({ message: 'Phone number already exists' });
             }
         }
         const salt = await bcrypt.genSalt(10)
