@@ -6,7 +6,7 @@ const dataUserController = {
             const { type } = req.query
             let existingDataUser = null
             if (type === 'cart') {
-                existingDataUser = await dataUserDB.findOne({ userId }, 'cart').populate({
+                existingDataUser = await dataUserDB.findOne({ userId }, 'userId cart').populate({
                     // Use 3 times populate get product(ref-dishes) continue get restaurant(ref-restaurants) and select field:'name' 
                     // 1 times get cart
                     // 2 times get product(ref-dishes). Because cart is array-object
