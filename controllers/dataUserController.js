@@ -96,14 +96,36 @@ const dataUserController = {
             res.status(500).json(error)
         }
     },
+    clearCart: async (req, res) => {
+        try {
+            const { id: userId } = req.params
+            await dataUserDB.findOneAndUpdate(
+                { userId },
+                { $set: { cart: [] } },
+                { new: true }
+            );
+            res.status(200).json("Carts cleaned")
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    },
     addOrderHistory: async (req, res) => {
         try {
             const { id: userId } = req.params
-            const { orderHistory } = req.body
+            const { cart, orderHistory } = await dataUserDB.findOne({ userId })
+            const productId = cart.map(data => data.product)
+            const listOrder = []
+            productId.forEach(product => {
+                if (orderHistory.includes(product)) {
+                    return
+                } else {
+                    listOrder.push(product)
+                }
+            })
             const existingDataUser = await dataUserDB.findOne({ userId })
             await existingDataUser.updateOne({
                 $push: {
-                    orderHistory
+                    orderHistory: listOrder
                 }
             })
             res.status(200).json("Added to history")
