@@ -1,9 +1,8 @@
 import fetch from "node-fetch";
 const base = "https://api-m.sandbox.paypal.com";
 
-export async function createOrder() {
+export async function createOrder({ listItems, total }) {
     const accessToken = await generateAccessToken();
-    console.log(accessToken);
     const url = `${base}/v2/checkout/orders`;
     const response = await fetch(url, {
         method: "post",
@@ -15,12 +14,23 @@ export async function createOrder() {
             intent: "CAPTURE",
             purchase_units: [
                 {
-                    amount: {
-                        currency_code: "USD",
-                        value: "100.00",
-                    },
-                },
+                    "items": listItems,
+                    "amount": {
+                        "currency_code": "USD",
+                        "value": total,
+                        "breakdown": {
+                            "item_total": {
+                                "currency_code": "USD",
+                                "value": total
+                            }
+                        }
+                    }
+                }
             ],
+            "application_context": {
+                "return_url": "https://example.com/return",
+                "cancel_url": "https://example.com/cancel"
+            }
         }),
     });
 

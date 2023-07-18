@@ -2,8 +2,9 @@ import express from 'express'
 const router = express.Router()
 import * as paypal from '../controllers/paymentController.js'
 router.post('/create-paypal-order', async (req, res) => {
+    const { listItems, total } = req.body
     try {
-        const order = await paypal.createOrder();
+        const order = await paypal.createOrder({ listItems, total });
         res.json(order);
     } catch (err) {
         res.status(500).send(err.message);
