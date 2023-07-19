@@ -38,7 +38,7 @@ const userController = {
             ,
             process.env.ACCESSTOKEN_KEY,
             {
-                expiresIn: '5p'
+                expiresIn: '5m'
             }
         )
     },
