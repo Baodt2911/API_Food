@@ -38,13 +38,13 @@ const userController = {
             ,
             process.env.ACCESSTOKEN_KEY,
             {
-                expiresIn: '5d'
+                expiresIn: '5p'
             }
         )
     },
     generateRefreshToken: async (user) => {
         const currentDate = new Date()
-        const expiresToken = Math.floor(currentDate.getTime() / 1000) + (5 * 24 * 60 * 60) // days in seconds
+        const expiresToken = Math.floor(currentDate.getTime() / 1000) + (15 * 24 * 60 * 60) // days in seconds
         const refreshToken = jwt.sign(
             {
                 id: user._id || user.id,
@@ -129,9 +129,10 @@ const userController = {
         }
     },
     userLogout: async (req, res) => {
-        const { authorization: refreshToken } = req.headers
-        await refreshTokenDB.findOneAndDelete({ refreshToken })
-        res.status(200).json('Logged out!!')
+        const { authorization: token } = req.headers
+        const refreshToken = token.split(" ")[1]
+        const test = await refreshTokenDB.findOneAndDelete({ refreshToken })
+        res.status(200).json(test)
     }
 }
 export default userController
