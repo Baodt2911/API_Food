@@ -72,7 +72,7 @@ const userController = {
         const { password, ...orther } = existingUser._doc
         const checkPassword = await bcrypt.compare(req.body.password, password)
         if (!checkPassword) {
-            return res.status(404).json({ message: "Wrong password" })
+            return res.status(401).json({ message: "Wrong password" })
         }
         const accessToken = userController.generateAccessToken(orther)
         const refreshToken = await userController.generateRefreshToken(orther)
@@ -124,6 +124,21 @@ const userController = {
                 message: "Update successfully",
                 data: orther
             })
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    },
+    resetPassword: async (req, res) => {
+        try {
+            const { email, phoneNumber, newPassword } = req.body
+            const existingUser = await userDB.findOne({ $or: [{ email }, { phoneNumber }] })
+            if (!existingUser) {
+                return res.status(404).json({ message: "Email or phone number does'nt exist" })
+            }
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash(newPassword, salt)
+            await existingUser.updateOne({ $set: { password: hashedPassword } })
+            res.status(200).json({ message: "Changed password" })
         } catch (error) {
             res.status(500).json(error)
         }

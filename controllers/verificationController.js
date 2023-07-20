@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer'
 import twilio from 'twilio'
 import bcrypt, { compare } from 'bcrypt'
 import OTPSchema from '../models/opt.js'
+import userDB from '../models/user.js'
 const verificationController = {
     generateConfirmationCode: () => {
         const confirmationCode = []
@@ -30,6 +31,10 @@ const verificationController = {
     verificationOtp: async (req, res) => {
         try {
             const { email, phone, otp: otpClient } = req.body
+            const isUser = await userDB.find({ $or: [{ email }, { phoneNumber: phone }] })
+            if (!isUser) {
+                return res.status(404).json({ message: "Email or phone number does'nt exist" })
+            }
             const existingOtp = await OTPSchema.find({ $or: [{ email }, { phone }] })
             if (!existingOtp.length) {
                 return res.status(404).json({ status: 'EXPRISED', message: "Expired OTP" })
@@ -47,6 +52,10 @@ const verificationController = {
     },
     sendToEmail: async (req, res) => {
         const { email } = req.body
+        const isUser = await userDB.find({ email })
+        if (!isUser) {
+            return res.status(404).json({ message: "Email does'nt exist" })
+        }
         const confirmationCode = verificationController.generateConfirmationCode()
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -57,11 +66,41 @@ const verificationController = {
                 pass: process.env.PASS
             }
         })
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: process.env.EMAIL,
             to: email,
-            subject: 'Food Deliver - Verification code',
-            html: `<p>Your confirmation code is: <ins><b>${confirmationCode}</b></ins></p>`
+            subject: 'Food Deliver - OTP',
+            html: `<!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Mã OTP đặt lại mật khẩu</title>
+            </head>
+            <body style="font-family: Arial, sans-serif;">
+            
+                <h2>Mã OTP đặt lại mật khẩu</h2>
+            
+                <p>Kính gửi <strong>${isUser[0].displayName},</strong></p>
+            
+                <p>Bạn đang nhận được mã OTP để xác thực việc đặt lại mật khẩu cho tài khoản của bạn.</p>
+            
+                <p>Mã OTP của bạn là: <strong style="font-size: 18px; background-color: #f0f0f0; padding: 5px;">${confirmationCode}</strong></p>
+            
+                <p>Mã này chỉ có giá trị trong vòng 1 phút kể từ khi email được gửi đi, vui lòng không chia sẻ mã này với bất kỳ ai.</p>
+            
+                <p>Nếu bạn không yêu cầu đặt lại mật khẩu hoặc không thực hiện hành động này, vui lòng bỏ qua email này.</p>
+            
+                <p>Nếu bạn gặp bất kỳ vấn đề nào hoặc cần hỗ trợ, hãy liên hệ với chúng tôi qua email <a href="mailto:food-delivery-support@example.com">food-delivery-support@example.com</a>.</p>
+            
+                <p>Xin cảm ơn.</p>
+            
+                <p>Trân trọng,</p>
+                <p><strong>Nhóm hỗ trợ của chúng tôi</strong></p>
+            
+            </body>
+            </html>
+            
+            `
         })
         const element = await verificationController.insertOtp({ email, confirmationCode, phone: '' })
         return res.status(200).json({
