@@ -52,7 +52,7 @@ const verificationController = {
     },
     sendToEmail: async (req, res) => {
         const { email } = req.body
-        const isUser = await userDB.find({ email })
+        const isUser = await userDB.findOne({ email })
         if (!isUser) {
             return res.status(404).json({ message: "Email does'nt exist" })
         }
@@ -80,7 +80,7 @@ const verificationController = {
             
                 <h2>OTP for Password Reset</h2>
             
-                <p>Dear <strong>${isUser[0]?.displayName},</strong></p>
+                <p>Dear <strong>${isUser.displayName},</strong></p>
             
                 <p>You are receiving an OTP to authenticate the password reset for your account.</p>
             
