@@ -74,32 +74,31 @@ const verificationController = {
             <html>
             <head>
                 <meta charset="UTF-8">
-                <title>Mã OTP đặt lại mật khẩu</title>
+                <title>OTP for Password Reset</title>
             </head>
             <body style="font-family: Arial, sans-serif;">
             
-                <h2>Mã OTP đặt lại mật khẩu</h2>
+                <h2>OTP for Password Reset</h2>
             
-                <p>Kính gửi <strong>${isUser[0].displayName},</strong></p>
+                <p>Dear <strong>${isUser[0]?.displayName},</strong></p>
             
-                <p>Bạn đang nhận được mã OTP để xác thực việc đặt lại mật khẩu cho tài khoản của bạn.</p>
+                <p>You are receiving an OTP to authenticate the password reset for your account.</p>
             
-                <p>Mã OTP của bạn là: <strong style="font-size: 18px; background-color: #f0f0f0; padding: 5px;">${confirmationCode}</strong></p>
+                <p>Your OTP is: <strong style="font-size: 18px; background-color: #f0f0f0; padding: 5px;">${confirmationCode}</strong></p>
             
-                <p>Mã này chỉ có giá trị trong vòng 1 phút kể từ khi email được gửi đi, vui lòng không chia sẻ mã này với bất kỳ ai.</p>
+                <p>This OTP is valid for 1 minutes from the time this email is sent. Please do not share this OTP with anyone.</p>
             
-                <p>Nếu bạn không yêu cầu đặt lại mật khẩu hoặc không thực hiện hành động này, vui lòng bỏ qua email này.</p>
+                <p>If you did not request a password reset or you're not performing this action, please disregard this email.</p>
             
-                <p>Nếu bạn gặp bất kỳ vấn đề nào hoặc cần hỗ trợ, hãy liên hệ với chúng tôi qua email <a href="mailto:food-delivery-support@example.com">food-delivery-support@example.com</a>.</p>
+                <p>If you encounter any issues or need assistance, please contact us via email at <a href="mailto:food-delivery-support@example.com">food-delivery-support@example.com</a>.</p>
             
-                <p>Xin cảm ơn.</p>
+                <p>Thank you.</p>
             
-                <p>Trân trọng,</p>
-                <p><strong>Nhóm hỗ trợ của chúng tôi</strong></p>
+                <p>Best regards,</p>
+                <p><strong>Our Support Team</strong></p>
             
             </body>
-            </html>
-            
+            </html>            
             `
         })
         const element = await verificationController.insertOtp({ email, confirmationCode, phone: '' })
