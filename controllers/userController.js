@@ -32,13 +32,13 @@ const userController = {
     generateAccessToken: (user) => {
         return jwt.sign(
             {
-                id: user._id,
+                id: user._id || user.id,
                 role: user.role
             }
             ,
             process.env.ACCESSTOKEN_KEY,
             {
-                expiresIn: '5m'
+                expiresIn: '2m'
             }
         )
     },
@@ -69,13 +69,13 @@ const userController = {
         if (!existingUser) {
             return res.status(404).json({ message: "Email does'nt exist" })
         }
-        const { password, ...orther } = existingUser._doc
+        const { password, ...other } = existingUser._doc
         const checkPassword = await bcrypt.compare(req.body.password, password)
         if (!checkPassword) {
             return res.status(401).json({ message: "Wrong password" })
         }
-        const accessToken = userController.generateAccessToken(orther)
-        const refreshToken = await userController.generateRefreshToken(orther)
+        const accessToken = userController.generateAccessToken(other)
+        const refreshToken = await userController.generateRefreshToken(other)
         // res.cookie('refreshToken', refreshToken, {
         //     httpOnly: true,
         //     secure: false,
@@ -83,7 +83,7 @@ const userController = {
         //     sameSite: 'strict'
         // });
         res.status(200).json({
-            user: orther,
+            user: other,
             accessToken,
             refreshToken
         })
@@ -119,10 +119,10 @@ const userController = {
             const existingUser = await userDB.findById(req.params.id)
             await existingUser.updateOne({ $set: req.body })
             const existingUserUpdated = await userDB.findById(req.params.id)
-            const { password, ...orther } = existingUserUpdated._doc
+            const { password, ...other } = existingUserUpdated._doc
             res.status(200).json({
                 message: "Update successfully",
-                data: orther
+                data: other
             })
         } catch (error) {
             res.status(500).json(error)

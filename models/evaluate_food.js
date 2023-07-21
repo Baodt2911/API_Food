@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-const evaluateDB = mongoose.model('evaluate',
+const evaluate_foodDB = mongoose.model('evaluate',
     new Schema({
         userId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -20,8 +20,8 @@ const evaluateDB = mongoose.model('evaluate',
         }
     },
         {
-            timestamps: true
+            timestamps: true,
         }
-    )
+    ),
 )
-export default evaluateDB
+export default evaluate_foodDB

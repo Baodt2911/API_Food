@@ -80,7 +80,7 @@ const restaurantsController = {
     },
     deleteRestaurant: async (req, res) => {
         try {
-            await dishesDB.updateOne({ restaurant: req.params.id }, { restaurant: null })
+            await dishesDB.updateMany({ restaurant: req.params.id }, { restaurant: null })
             await restaurantsDB.findByIdAndDelete(req.params.id)
             res.status(200).json("Deleted successfully")
         } catch (error) {

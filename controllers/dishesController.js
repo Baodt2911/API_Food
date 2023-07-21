@@ -1,5 +1,5 @@
 import dishesDB from "../models/dishes.js";
-import evaluateDB from "../models/evaluate.js";
+import evaluate_foodDB from "../models/evaluate_food.js";
 import restaurantsDB from "../models/restaurants.js";
 const dishesController = {
     getAlldishes: async (req, res) => {
@@ -125,7 +125,7 @@ const dishesController = {
                 { menu: req.params.id },
                 { $pull: { menu: req.params.id } }
             )
-            await evaluateDB.deleteMany({ dishes: req.params.id })
+            await evaluate_foodDB.deleteMany({ dishes: req.params.id })
             await dishesDB.findByIdAndDelete(req.params.id)
             res.status(200).json("Deleted successfully")
         } catch (error) {
