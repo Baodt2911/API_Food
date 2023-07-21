@@ -1,7 +1,6 @@
-import dishesDB from "../models/dishes.js"
+import dataUserDB from "../models/data-user.js"
 import evaluate_foodDB from "../models/evaluate_food.js"
 import evaluate_restaurantDB from "../models/evaluate_restaurant.js"
-import restaurantsDB from "../models/restaurants.js"
 const evaluateController = {
     getEvaluates: async (req, res) => {
         try {
@@ -12,8 +11,7 @@ const evaluateController = {
                     path: 'userId',
                     select: ['displayName', 'photoURL']
                 })
-            } else if (type === 'restaurant') {
-                console.log('type', type);
+            } else if (type === 'restaurants') {
                 existingEvaluate = await evaluate_restaurantDB.find({ restaurant: req.params.id }).populate({
                     path: 'userId',
                     select: ['displayName', 'photoURL']
@@ -26,31 +24,38 @@ const evaluateController = {
             res.status(500).json(error)
         }
     },
-    addEvaluate: async (req, res) => {
+    addEvaluateFood: async (req, res) => {
         try {
-            const { type } = req.query
             const { userId, rate, text } = req.body
-            if (type === 'dishes') {
-                const isDishes = await dishesDB.findById(req.params.id)
-                if (!isDishes) {
-                    return res.status(404).json('Not found dishes')
-                }
+            const { cart } = await dataUserDB.findOne({ userId }, 'cart')
+            cart.forEach(async (data) => {
                 await evaluate_foodDB.create({
                     userId, rate, text,
-                    dishes: req.params.id
+                    dishes: data.product
                 })
-            } else if (type === 'restaurant') {
-                const isRestaurant = await restaurantsDB.findById(req.params.id)
-                if (!isRestaurant) {
-                    return res.status(404).json('Not found restaurant')
+            })
+            res.status(200).json('Added evaluate')
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    },
+    addEvaluateRestaurant: async (req, res) => {
+        try {
+            const { userId, rate, text } = req.body
+            const { cart } = await dataUserDB.findOne({ userId }, 'cart').populate({
+                path: 'cart',
+                populate: {
+                    path: 'product',
+                    model: 'dishes',
+                    select: 'restaurant'
                 }
+            })
+            cart.forEach(async (data) => {
                 await evaluate_restaurantDB.create({
                     userId, rate, text,
-                    restaurant: req.params.id
+                    restaurant: data.product.restaurant
                 })
-            } else {
-                return res.status(404).json('Type unknow!')
-            }
+            })
             res.status(200).json('Added evaluate')
         } catch (error) {
             res.status(500).json(error)

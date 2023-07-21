@@ -15,7 +15,6 @@ const checkToken = (req, res, next) => {
 }
 const checkUser = (req, res, next) => {
     checkToken(req, res, () => {
-        console.log(req.user.id, req.params.id);
         if (req.body.userId === req.user.id ||
             req.user.id === req.params.id) {
             next()
