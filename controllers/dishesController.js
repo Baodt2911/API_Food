@@ -119,6 +119,17 @@ const dishesController = {
             res.status(500).json(error)
         }
     },
+    orderDishes: async (req, res) => {
+        try {
+            const dishes = await dishesDB.findByIdAndUpdate(req.params.id, { $inc: { order: 1 } })
+            if (!dishes) {
+                return res.status(404).json({ message: "Dishes not found" });
+            }
+            res.status(200).json('Increased purchases')
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    },
     deleteDishes: async (req, res) => {
         try {
             await restaurantsDB.updateMany(
