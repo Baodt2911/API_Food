@@ -23,6 +23,15 @@ const restaurantsController = {
             res.status(500).json(error)
         }
     },
+    getRestaurantByDishes: async (req, res) => {
+        try {
+            const { id } = req.params
+            const restaurants = await restaurantsDB.findOne({ menu: { $in: [id] } })
+            res.status(200).json(restaurants)
+        } catch (error) {
+            res.status(500).json(error)
+        }
+    },
     getRestaurantPopular: async (req, res) => {
         try {
             const { limit } = req.query

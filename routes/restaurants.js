@@ -4,6 +4,7 @@ import { checkAdmin } from "../middleware/auth.js";
 const router = express.Router()
 router.get('/', restaurantsController.getAllRestaurants)
 router.get('/id/:id', restaurantsController.getRestaurantById)
+router.get('/by-dishes/:id', restaurantsController.getRestaurantByDishes)
 router.get('/search', restaurantsController.searchRestaurant)
 router.get('/popular', restaurantsController.getRestaurantPopular)
 router.post('/add', checkAdmin, restaurantsController.addRestaurant)
